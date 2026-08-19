@@ -1,6 +1,6 @@
 import { ProjectFilter } from "@/components/projects/project-filter";
 import { Container } from "@/components/ui/container";
-import { projects } from "@/data/projects";
+import { getPublicProjects } from "@/lib/content/public";
 import { createPageMetadata } from "@/lib/site";
 
 export const metadata = createPageMetadata({
@@ -9,7 +9,8 @@ export const metadata = createPageMetadata({
   path: "/projects",
 });
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getPublicProjects();
   return (
     <main id="main-content" className="projects-archive">
       <header className="projects-archive__hero">

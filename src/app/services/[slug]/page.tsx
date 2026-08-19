@@ -5,8 +5,8 @@ import { notFound } from "next/navigation";
 import { ImageReveal } from "@/components/motion/image-reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { projects } from "@/data/projects";
-import { getService, services } from "@/data/services";
+import { services as fallbackServices } from "@/data/services";
+import { getPublicProjects, getPublicService } from "@/lib/content/public";
 import { absoluteUrl } from "@/lib/utils";
 
 interface ServicePageProps {
@@ -21,12 +21,12 @@ const deliverySteps = [
 ];
 
 export function generateStaticParams() {
-  return services.map((service) => ({ slug: service.slug }));
+  return fallbackServices.map((service) => ({ slug: service.slug }));
 }
 
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const service = getService(slug);
+  const service = await getPublicService(slug);
   if (!service) return {};
   return {
     title: service.name,
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 
 export default async function ServicePage({ params }: ServicePageProps) {
   const { slug } = await params;
-  const service = getService(slug);
+  const [service, projects] = await Promise.all([getPublicService(slug), getPublicProjects()]);
   if (!service) notFound();
 
   const relatedProjects = service.relatedProjectSlugs

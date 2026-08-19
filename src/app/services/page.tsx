@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ImageReveal } from "@/components/motion/image-reveal";
 import { Container } from "@/components/ui/container";
-import { services } from "@/data/services";
+import { getPublicServices } from "@/lib/content/public";
 import { createPageMetadata } from "@/lib/site";
 
 export const metadata = createPageMetadata({
@@ -11,7 +11,8 @@ export const metadata = createPageMetadata({
   path: "/services",
 });
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getPublicServices();
   return (
     <main id="main-content" className="services-archive">
       <header className="services-archive__hero">

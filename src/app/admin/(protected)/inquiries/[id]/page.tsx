@@ -1,0 +1,16 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { addInquiryNote, updateInquiryStatus } from "@/app/admin/(protected)/actions";
+import { AdminPageHeader, StatusBadge, formatDate } from "@/components/admin/ui";
+import { getInquiry } from "@/lib/admin/data";
+
+export default async function InquiryDetailPage({ params }: { params: Promise<{id:string}> }) {
+  const { id } = await params; const { inquiry, notes } = await getInquiry(id); if (!inquiry) notFound();
+  const details = [["Email",inquiry.email],["Phone",inquiry.phone],["Company",inquiry.company],["Project type",inquiry.project_type],["Budget",inquiry.budget],["Location",inquiry.location],["Timeline",inquiry.timeline],["Received",formatDate(inquiry.created_at)],["Resend ID",inquiry.email_delivery_id]];
+  return <main className="admin-page"><AdminPageHeader eyebrow="Inquiries / Detail" title={inquiry.name} description={`${inquiry.form_type === "quote" ? "Project inquiry" : "Contact request"} received ${formatDate(inquiry.created_at)}`}><Link className="admin-button" href={`mailto:${inquiry.email}`}>Email customer ↗</Link><Link className="admin-button" href="/admin/inquiries">Back to inbox</Link></AdminPageHeader>
+    <div className="admin-detail-grid"><div className="admin-form-sections"><section className="admin-panel"><header className="admin-panel__header"><h2>Message</h2><StatusBadge status={inquiry.status}/></header><div className="admin-panel__body"><p className="admin-detail-copy">{inquiry.message}</p></div></section>
+      <section className="admin-panel"><header className="admin-panel__header"><h2>Internal notes</h2><span>{notes.length}</span></header><div className="admin-panel__body"><form action={addInquiryNote} className="admin-field"><input type="hidden" name="inquiryId" value={inquiry.id}/><label htmlFor="note">Add a private note</label><textarea id="note" name="body" maxLength={2000} required placeholder="Context for the Northline team…"/><button className="admin-button admin-button--primary" type="submit">Add note</button></form>{notes.map((note) => <article className="admin-note" key={note.id}><p>{note.body}</p><small>{formatDate(note.created_at)}</small></article>)}</div></section></div>
+      <aside className="admin-form-sections"><section className="admin-panel"><header className="admin-panel__header"><h2>Customer details</h2></header><div className="admin-panel__body"><dl className="admin-definition-list">{details.filter(([,value])=>value).map(([label,value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></div></section><section className="admin-panel"><header className="admin-panel__header"><h2>Workflow</h2></header><div className="admin-panel__body"><form action={updateInquiryStatus} className="admin-field"><input type="hidden" name="id" value={inquiry.id}/><label htmlFor="inquiry-status">Status</label><select id="inquiry-status" name="status" defaultValue={inquiry.status}><option value="received">Received</option><option value="delivered">Delivered</option><option value="delivery_failed">Delivery failed</option><option value="archived">Archived</option></select><button className="admin-button" type="submit">Update status</button></form></div></section></aside>
+    </div>
+  </main>;
+}

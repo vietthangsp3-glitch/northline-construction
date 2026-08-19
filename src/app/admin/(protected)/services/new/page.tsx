@@ -1,0 +1,2 @@
+import { AdminPageHeader } from "@/components/admin/ui"; import { ServiceEditor } from "@/components/admin/service-editor";
+export const metadata={title:"New service"};export default function NewServicePage(){return <main className="admin-page"><AdminPageHeader eyebrow="Services / New" title="Create service" description="Add an offering with clear capabilities and supporting work."/><ServiceEditor/></main>}

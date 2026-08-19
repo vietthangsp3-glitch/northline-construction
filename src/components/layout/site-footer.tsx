@@ -3,12 +3,18 @@ import { Container } from "@/components/ui/container";
 import { navigation } from "@/data/navigation";
 import { siteConfig } from "@/lib/site";
 
-const socialLinks = [
+const fallbackSocialLinks = [
   { label: "LinkedIn", href: "https://www.linkedin.com" },
   { label: "Instagram", href: "https://www.instagram.com" },
 ];
 
-export function SiteFooter() {
+export function SiteFooter({ business, social }: { business?: { email?: string; phone?: string }; social?: { linkedin?: string; instagram?: string } }) {
+  const socialLinks = [
+    { label: "LinkedIn", href: social?.linkedin || fallbackSocialLinks[0].href },
+    { label: "Instagram", href: social?.instagram || fallbackSocialLinks[1].href },
+  ];
+  const email = business?.email || siteConfig.email;
+  const phone = business?.phone || siteConfig.phone;
   return (
     <footer className="site-footer">
       <Container>
@@ -34,8 +40,8 @@ export function SiteFooter() {
             </div>
             <div className="site-footer__contact">
               <h2>Contact</h2>
-              <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
-              <a href="tel:+12125550147">{siteConfig.phone}</a>
+              <a href={`mailto:${email}`}>{email}</a>
+              <a href={`tel:${phone.replace(/[^+\d]/g, "")}`}>{phone}</a>
             </div>
           </div>
         </div>

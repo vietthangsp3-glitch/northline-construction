@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
-import { services } from "@/data/services";
+import { getPublicServices } from "@/lib/content/public";
 
-export function Expertise() {
+export async function Expertise() {
+  const services = await getPublicServices();
   return (
     <section className="expertise" aria-labelledby="expertise-heading">
       <Container>

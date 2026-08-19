@@ -4,7 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ImageReveal } from "@/components/motion/image-reveal";
 import { Container } from "@/components/ui/container";
-import { getProject, projects } from "@/data/projects";
+import { projects as fallbackProjects } from "@/data/projects";
+import { getPublicProject, getPublicProjects } from "@/lib/content/public";
 import { absoluteUrl } from "@/lib/utils";
 
 interface ProjectPageProps {
@@ -12,12 +13,12 @@ interface ProjectPageProps {
 }
 
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
+  return fallbackProjects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = await getPublicProject(slug);
   if (!project) return {};
   return {
     title: project.name,
@@ -34,7 +35,8 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params;
-  const project = getProject(slug);
+  const projects = await getPublicProjects();
+  const project = projects.find((item) => item.slug === slug);
   if (!project) notFound();
 
   const projectIndex = projects.findIndex((item) => item.slug === project.slug);

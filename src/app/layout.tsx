@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
-import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteHeader } from "@/components/layout/site-header";
+import { AppChrome } from "@/components/layout/app-chrome";
 import { siteConfig } from "@/lib/site";
+import { getPublicSettings } from "@/lib/content/public";
 import "./globals.css";
 
 const geist = Geist({
@@ -67,16 +67,17 @@ const organizationSchema = {
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const settings = await getPublicSettings();
+  const business = settings.business as {email?:string;phone?:string}|undefined;
+  const social = settings.social as {linkedin?:string;instagram?:string}|undefined;
   return (
     <html lang="en" className={geist.variable}>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, "\u003c") }} />
         <noscript><style>{".scroll-image-reveal{opacity:1!important;transform:none!important}"}</style></noscript>
         <a className="skip-link" href="#main-content">Skip to main content</a>
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+        <AppChrome business={business} social={social}>{children}</AppChrome>
       </body>
     </html>
   );

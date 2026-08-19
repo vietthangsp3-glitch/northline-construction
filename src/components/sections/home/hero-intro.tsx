@@ -1,15 +1,23 @@
 import Image from "next/image";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { Container } from "@/components/ui/container";
+import { getPublicContent } from "@/lib/content/public";
 
-const stats = [
+const fallbackStats = [
   { value: "25+", label: "Years of Experience" },
   { value: "180+", label: "Projects Delivered" },
   { value: "$1.2B+", label: "Project Value" },
   { value: "14", label: "Industry Awards" },
 ];
 
-export function HeroIntro() {
+export async function HeroIntro() {
+  const content = await getPublicContent();
+  const hero = (content["home.hero"] || {}) as { heading?: string; description?: string; cta?: string };
+  const about = (content["home.about"] || {}) as { heading?: string; body?: string };
+  const statsContent = (content["home.stats"] || {}) as { items?: Array<{value:string;label:string}> };
+  const heading = hero.heading || "We Build What's Next.";
+  const headingParts = heading.toUpperCase().split(/(?=WHAT'S NEXT\.?$)/);
+  const stats = statsContent.items?.length ? statsContent.items : fallbackStats;
   return (
     <>
       <section className="home-hero" aria-labelledby="hero-heading">
@@ -18,12 +26,12 @@ export function HeroIntro() {
         <Container className="home-hero__content">
           <div className="home-hero__body">
             <p className="eyebrow">New York · Building Nationwide</p>
-            <h1 id="hero-heading"><span>WE BUILD</span><span>WHAT&apos;S NEXT.</span></h1>
+            <h1 id="hero-heading">{headingParts.map((part) => <span key={part}>{part}</span>)}</h1>
             <div className="home-hero__footer">
-              <p>Building exceptional spaces through precision, craftsmanship and purpose.</p>
+              <p>{hero.description || "Building exceptional spaces through precision, craftsmanship and purpose."}</p>
               <div className="home-hero__actions">
                 <ArrowLink href="/projects" label="Explore Our Work" tone="light" />
-                <ArrowLink href="/request-a-quote" label="Start a Project" tone="light" />
+                <ArrowLink href="/request-a-quote" label={hero.cta || "Start a Project"} tone="light" />
               </div>
             </div>
           </div>
@@ -35,9 +43,9 @@ export function HeroIntro() {
         <Container>
           <p className="eyebrow">01 / About Northline</p>
           <div className="home-intro__grid">
-            <h2 id="intro-heading">Built on precision.<br />Driven by possibility.</h2>
+            <h2 id="intro-heading">{about.heading || <>Built on precision.<br />Driven by possibility.</>}</h2>
             <div className="home-intro__copy">
-              <p>Northline builds places where people work, live, heal, gather, and move forward. For more than 25 years, we have brought discipline to demanding projects across the United States—aligning design intent with real-world execution from the earliest decision through final handover.</p>
+              <p>{about.body || "Northline builds places where people work, live, heal, gather, and move forward. For more than 25 years, we have brought discipline to demanding projects across the United States—aligning design intent with real-world execution from the earliest decision through final handover."}</p>
               <p>Our teams pair construction knowledge with direct communication and an exacting standard of craft. The result is work that performs under pressure and holds its value over time.</p>
             </div>
           </div>

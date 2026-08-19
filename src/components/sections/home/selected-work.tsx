@@ -3,9 +3,10 @@ import Link from "next/link";
 import { ImageReveal } from "@/components/motion/image-reveal";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { Container } from "@/components/ui/container";
-import { featuredProjects } from "@/data/projects";
+import { getPublicProjects } from "@/lib/content/public";
 
-export function SelectedWork() {
+export async function SelectedWork() {
+  const featuredProjects = (await getPublicProjects()).filter((project) => project.featured);
   return (
     <section className="selected-work" aria-labelledby="selected-work-heading">
       <Container>

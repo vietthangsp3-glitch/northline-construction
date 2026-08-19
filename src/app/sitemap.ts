@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
 import { insights } from "@/data/insights";
-import { projects } from "@/data/projects";
-import { services } from "@/data/services";
+import { getPublicProjects, getPublicServices } from "@/lib/content/public";
 import { absoluteUrl } from "@/lib/utils";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [projects, services] = await Promise.all([getPublicProjects(), getPublicServices()]);
   const lastModified = new Date("2026-08-18T00:00:00.000Z");
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: absoluteUrl("/"), lastModified, changeFrequency: "monthly", priority: 1 },
