@@ -33,7 +33,7 @@ export default async function ServicesPage() {
               <div className="service-feature__body">
                 <h2><Link href={"/services/" + service.slug}>{service.name}</Link></h2>
                 <p>{service.summary}</p>
-                <Link className="service-feature__link" href={"/services/" + service.slug}>Explore Service <span aria-hidden="true">&nearr;</span></Link>
+                <Link className="service-feature__link" href={"/services/" + service.slug}>Explore Service <span aria-hidden="true">↗</span></Link>
               </div>
               <Link className="service-feature__image" href={"/services/" + service.slug} aria-label={"Explore " + service.name}>
                 <ImageReveal direction={Number(service.number) % 2 === 0 ? "right" : "left"}><Image src={service.image.src} alt={service.image.alt} fill sizes="(max-width: 767px) 100vw, 36vw" /></ImageReveal>

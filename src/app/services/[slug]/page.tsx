@@ -108,7 +108,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
       <section className="service-projects" aria-labelledby="related-projects-heading">
         <Container>
-          <div className="service-projects__heading"><div><p className="eyebrow">Selected Experience</p><h2 id="related-projects-heading">Related Projects</h2></div><Link href="/projects">View All Work <span aria-hidden="true">&nearr;</span></Link></div>
+          <div className="service-projects__heading"><div><p className="eyebrow">Selected Experience</p><h2 id="related-projects-heading">Related Projects</h2></div><Link href="/projects">View All Work <span aria-hidden="true">↗</span></Link></div>
           <div className="service-projects__grid">
             {relatedProjects.map((project) => (
               <article key={project.slug}>
@@ -123,7 +123,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <section className="service-cta">
         <Container>
           <p className="eyebrow">Start a Conversation</p>
-          <div><h2>Bring us the<br />hard questions.</h2><ButtonLink href="/request-a-quote" variant="inverse">Start a Project <span aria-hidden="true">&nearr;</span></ButtonLink></div>
+          <div><h2>Bring us the<br />hard questions.</h2><ButtonLink href="/request-a-quote" variant="inverse">Start a Project <span aria-hidden="true">↗</span></ButtonLink></div>
         </Container>
       </section>
     </main>

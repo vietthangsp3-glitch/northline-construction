@@ -33,7 +33,7 @@ export default function InsightsPage() {
             <h2 id="featured-insight-heading"><Link href={"/insights/" + leadInsight.slug}>{leadInsight.title}</Link></h2>
             <p>{leadInsight.excerpt}</p>
             <div><time dateTime={leadInsight.publishedAt}>{dateFormatter.format(new Date(leadInsight.publishedAt))}</time><span>{leadInsight.readingTime}</span></div>
-            <Link className="insights-read-link" href={"/insights/" + leadInsight.slug}>Read Insight <span aria-hidden="true">&nearr;</span></Link>
+            <Link className="insights-read-link" href={"/insights/" + leadInsight.slug}>Read Insight <span aria-hidden="true">↗</span></Link>
           </article>
         </Container>
       </section>
@@ -48,7 +48,7 @@ export default function InsightsPage() {
                 <div className="insights-list__meta"><span>{insight.category}</span><time dateTime={insight.publishedAt}>{dateFormatter.format(new Date(insight.publishedAt))}</time></div>
                 <h2><Link href={"/insights/" + insight.slug}>{insight.title}</Link></h2>
                 <p>{insight.excerpt}</p>
-                <Link className="insights-read-link" href={"/insights/" + insight.slug}>Read Article <span aria-hidden="true">&nearr;</span></Link>
+                <Link className="insights-read-link" href={"/insights/" + insight.slug}>Read Article <span aria-hidden="true">↗</span></Link>
               </article>
             ))}
           </div>

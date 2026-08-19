@@ -33,7 +33,7 @@ export function ProjectFilter({ projects }: ProjectFilterProps) {
             <article className={"archive-project archive-project--" + (index % 4)} key={project.slug}>
               <Link className="archive-project__image" href={"/projects/" + project.slug} aria-label={"View " + project.name}>
                 <ImageReveal direction={index % 2 === 0 ? "left" : "right"}><Image src={project.cover.src} alt={project.cover.alt} fill sizes="(max-width: 767px) 100vw, (max-width: 1200px) 55vw, 48vw" /></ImageReveal>
-                <span>View Project <span aria-hidden="true">&nearr;</span></span>
+                <span>View Project <span aria-hidden="true">↗</span></span>
               </Link>
               <div className="archive-project__meta">
                 <p>{String(projects.indexOf(project) + 1).padStart(2, "0")}</p>

@@ -96,7 +96,7 @@ export default async function InsightPage({ params }: InsightPageProps) {
       <section className="article-next" aria-label="Related insight">
         <Container>
           <p className="eyebrow">Continue Reading</p>
-          <Link href={"/insights/" + relatedInsight.slug}><span>{relatedInsight.category}</span><h2>{relatedInsight.title}</h2><span aria-hidden="true">&nearr;</span></Link>
+          <Link href={"/insights/" + relatedInsight.slug}><span>{relatedInsight.category}</span><h2>{relatedInsight.title}</h2><span aria-hidden="true">↗</span></Link>
         </Container>
       </section>
     </main>

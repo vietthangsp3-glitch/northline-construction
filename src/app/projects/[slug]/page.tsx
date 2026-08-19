@@ -111,7 +111,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className="next-project__scrim" />
           <Container>
             <p className="eyebrow">Next Project</p>
-            <h2>{nextProject.name} <span aria-hidden="true">&nearr;</span></h2>
+            <h2>{nextProject.name} <span aria-hidden="true">↗</span></h2>
             <p>{nextProject.location}</p>
           </Container>
         </Link>

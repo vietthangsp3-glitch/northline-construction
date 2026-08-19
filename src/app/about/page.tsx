@@ -66,7 +66,7 @@ export default function AboutPage() {
       </section>
 
       <section className="company-people-cta">
-        <Container><p className="eyebrow">The People Behind the Work</p><div><h2>Experience matters.<br />So does curiosity.</h2><ButtonLink href="/team">Meet Our Leadership <span aria-hidden="true">&nearr;</span></ButtonLink></div></Container>
+        <Container><p className="eyebrow">The People Behind the Work</p><div><h2>Experience matters.<br />So does curiosity.</h2><ButtonLink href="/team">Meet Our Leadership <span aria-hidden="true">↗</span></ButtonLink></div></Container>
       </section>
     </main>
   );

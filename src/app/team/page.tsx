@@ -36,7 +36,7 @@ export default function TeamPage() {
       <section className="team-culture">
         <Container>
           <div><p className="eyebrow">Careers / Culture</p><h2>Do the best work<br />of your career.</h2></div>
-          <div><p>Northline is built around people who ask better questions, share what they know, and take pride in getting the details right. We invest in field experience, mentorship, and clear paths for growth.</p><ButtonLink href="/contact" variant="secondary">Start a Conversation <span aria-hidden="true">&nearr;</span></ButtonLink></div>
+          <div><p>Northline is built around people who ask better questions, share what they know, and take pride in getting the details right. We invest in field experience, mentorship, and clear paths for growth.</p><ButtonLink href="/contact" variant="secondary">Start a Conversation <span aria-hidden="true">↗</span></ButtonLink></div>
         </Container>
       </section>
     </main>

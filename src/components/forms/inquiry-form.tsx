@@ -18,7 +18,7 @@ function FieldError({ state, name, id }: { state: InquiryState; name: string; id
 
 function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
-  return <button className="inquiry-form__submit" type="submit" disabled={pending}>{pending ? "Sending..." : label}<span aria-hidden="true">&nearr;</span></button>;
+  return <button className="inquiry-form__submit" type="submit" disabled={pending}>{pending ? "Sending..." : label}<span aria-hidden="true">↗</span></button>;
 }
 
 export function InquiryForm({ variant, contactEmail = "hello@northlinebuild.com" }: InquiryFormProps) {
