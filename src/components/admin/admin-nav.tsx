@@ -10,7 +10,8 @@ const groups = [
   { label: "Content", items: [
     { href: "/admin/projects", label: "Projects", icon: "building" },
     { href: "/admin/services", label: "Services", icon: "layers" },
-    { href: "/admin/content", label: "Website Content", icon: "edit" },
+    { href: "/admin/content/homepage", label: "Homepage", icon: "edit" },
+    { href: "/admin/content/testimonials", label: "Testimonials", icon: "quote" },
     { href: "/admin/media", label: "Media", icon: "image" },
   ] },
   { label: "Business", items: [{ href: "/admin/inquiries", label: "Inquiries", icon: "mail" }] },
@@ -24,6 +25,7 @@ function Icon({ name }: { name: string }) {
     layers: <><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></>,
     edit: <><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></>,
     image: <><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></>,
+    quote: <><path d="M7 17H4a2 2 0 0 1-2-2v-3a6 6 0 0 1 6-6v3a3 3 0 0 0-3 3h2v5Zm12 0h-3a2 2 0 0 1-2-2v-3a6 6 0 0 1 6-6v3a3 3 0 0 0-3 3h2v5Z"/></>,
     mail: <><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></>,
     settings: <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></>,
   };

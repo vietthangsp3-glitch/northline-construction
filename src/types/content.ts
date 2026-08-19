@@ -38,6 +38,10 @@ export interface Project {
   gallery: ImageAsset[];
   metrics: ProjectMetric[];
   featured: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImage?: ImageAsset;
+  canonicalUrl?: string;
 }
 
 export interface Service {
@@ -49,6 +53,11 @@ export interface Service {
   capabilities: string[];
   relatedProjectSlugs: string[];
   image: ImageAsset;
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImage?: ImageAsset;
+  canonicalUrl?: string;
+  featured?: boolean;
 }
 
 export interface TeamMember {
@@ -71,10 +80,13 @@ export interface Insight {
 }
 
 export interface Testimonial {
+  id?: string;
   quote: string;
   author: string;
   role: string;
   company: string;
+  avatar?: ImageAsset;
+  projectSlug?: string;
 }
 
 export interface NavigationItem {

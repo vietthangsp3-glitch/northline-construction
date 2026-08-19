@@ -2,15 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { getPublicServices } from "@/lib/content/public";
+import type { HomepageCollectionSection } from "@/lib/content/homepage";
 
-export async function Expertise() {
-  const services = await getPublicServices();
+export async function Expertise({ config }: { config: HomepageCollectionSection }) {
+  const allServices = await getPublicServices();
+  const featured = allServices.filter((service) => service.featured);
+  const services = featured.length ? featured : allServices;
   return (
-    <section className="expertise" aria-labelledby="expertise-heading">
+    <section className={`expertise expertise--${config.layout}`} aria-labelledby="expertise-heading">
       <Container>
         <div className="section-heading-row section-heading-row--light">
-          <p className="eyebrow">03 / What We Do</p>
-          <h2 id="expertise-heading">Expertise</h2>
+          <p className="eyebrow">{config.eyebrow}</p>
+          <div><h2 id="expertise-heading">{config.heading}</h2>{config.subheading && <p>{config.subheading}</p>}</div>
         </div>
         <div className="expertise-list">
           {services.map((service) => (

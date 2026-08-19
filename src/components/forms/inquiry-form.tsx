@@ -8,6 +8,7 @@ const initialState: InquiryState = { status: "idle", message: "" };
 
 interface InquiryFormProps {
   variant: "contact" | "quote";
+  contactEmail?: string;
 }
 
 function FieldError({ state, name, id }: { state: InquiryState; name: string; id: string }) {
@@ -20,7 +21,7 @@ function SubmitButton({ label }: { label: string }) {
   return <button className="inquiry-form__submit" type="submit" disabled={pending}>{pending ? "Sending..." : label}<span aria-hidden="true">&nearr;</span></button>;
 }
 
-export function InquiryForm({ variant }: InquiryFormProps) {
+export function InquiryForm({ variant, contactEmail = "hello@northlinebuild.com" }: InquiryFormProps) {
   const [state, formAction] = useActionState(submitInquiry, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const statusRef = useRef<HTMLParagraphElement>(null);
@@ -61,7 +62,7 @@ export function InquiryForm({ variant }: InquiryFormProps) {
       <div className="form-field form-field--wide"><label htmlFor={variant + "-message"}>{isQuote ? "Tell us about the project" : "How can we help?"} <span>*</span></label><textarea id={variant + "-message"} name="message" rows={6} required maxLength={2000} aria-invalid={invalid("message")} aria-describedby={invalid("message") ? variant + "-message-error" : undefined} /><FieldError state={state} name="message" id={variant + "-message-error"} /></div>
 
       <div className="inquiry-form__footer"><p>By submitting this form, you agree to our <a href="/privacy">Privacy Policy</a>.</p><SubmitButton label={isQuote ? "Submit Project Inquiry" : "Send Message"} /></div>
-      {state.status === "error" && <p ref={statusRef} className="inquiry-form__status" role="alert" tabIndex={-1}>{state.message}{state.code === "delivery_unavailable" && <> <a href="mailto:hello@northlinebuild.com">Email hello@northlinebuild.com</a>.</>}</p>}
+      {state.status === "error" && <p ref={statusRef} className="inquiry-form__status" role="alert" tabIndex={-1}>{state.message}{state.code === "delivery_unavailable" && <> <a href={`mailto:${contactEmail}`}>Email {contactEmail}</a>.</>}</p>}
     </form>
   );
 }

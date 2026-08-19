@@ -1,6 +1,15 @@
-import { saveContentItem } from "@/app/admin/(protected)/actions";
-import { AdminPageHeader, EmptyState, formatDate } from "@/components/admin/ui";
-import { getSiteContent } from "@/lib/admin/data";
+import Link from "next/link";
+import { AdminPageHeader } from "@/components/admin/ui";
 
-export const metadata={title:"Website Content"};
-export default async function ContentPage(){const items=await getSiteContent();return <main className="admin-page"><AdminPageHeader eyebrow="Content / Website" title="Website content" description="Edit the high-value copy clients need to change without turning every label into a field."/>{items.length?<div className="admin-form-sections">{items.map((item)=><form action={saveContentItem} className="admin-form-section" key={item.key}><input type="hidden" name="key" value={item.key}/><input type="hidden" name="section" value={item.section}/><input type="hidden" name="label" value={item.label}/><header className="admin-form-section__heading"><h2>{item.label}</h2><p>{item.section} · Last updated {formatDate(item.updated_at)}</p></header><div className="admin-form-section__body"><div className="admin-field"><label htmlFor={`content-${item.key}`}>Structured content</label><textarea id={`content-${item.key}`} name="value" rows={8} defaultValue={JSON.stringify(item.value,null,2)} required/><small>JSON keeps related copy grouped and prevents a database field for every small label.</small></div></div><footer className="admin-form-footer"><button className="admin-button admin-button--primary">Save {item.label}</button></footer></form>)}</div>:<section className="admin-panel"><EmptyState title="No editable content" copy="Run the admin CMS migration to add the practical homepage content groups."/></section>}</main>}
+export const metadata = { title: "Website Content" };
+
+const areas = [
+  { href: "/admin/content/homepage", title: "Homepage", copy: "Hero, about, statistics, featured services and projects, testimonials, CTA, and homepage SEO." },
+  { href: "/admin/content/testimonials", title: "Testimonials", copy: "Client quotes, attribution, avatars, project references, ordering, and publishing." },
+  { href: "/admin/settings", title: "Contact & footer", copy: "Business information, contact labels, social profiles, and footer copy." },
+  { href: "/admin/settings/seo", title: "Global SEO", copy: "Site-wide search metadata and social preview images for key listing pages." },
+];
+
+export default function ContentPage() {
+  return <main className="admin-page"><AdminPageHeader eyebrow="Content / Website" title="Website content" description="Curated controls keep every public page on-brand while making routine updates straightforward."/><div className="admin-content-cards">{areas.map((area)=><Link href={area.href} key={area.href}><span>Open editor ↗</span><h2>{area.title}</h2><p>{area.copy}</p></Link>)}</div></main>;
+}

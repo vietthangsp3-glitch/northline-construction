@@ -13,6 +13,8 @@ interface ServicePageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 60;
+
 const deliverySteps = [
   { number: "01", title: "Define", copy: "Align scope, priorities, risk, and the decisions that will control the project." },
   { number: "02", title: "Resolve", copy: "Test options with real cost, schedule, logistics, and constructability information." },
@@ -29,14 +31,14 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
   const service = await getPublicService(slug);
   if (!service) return {};
   return {
-    title: service.name,
-    description: service.introduction,
-    alternates: { canonical: "/services/" + service.slug },
+    title: service.seoTitle || service.name,
+    description: service.seoDescription || service.introduction,
+    alternates: { canonical: service.canonicalUrl || "/services/" + service.slug },
     openGraph: {
-      title: service.name + " | Northline",
-      description: service.introduction,
-      url: "/services/" + service.slug,
-      images: [{ url: service.image.src, width: service.image.width, height: service.image.height, alt: service.image.alt }],
+      title: service.seoTitle || service.name + " | Northline",
+      description: service.seoDescription || service.introduction,
+      url: service.canonicalUrl || "/services/" + service.slug,
+      images: [{ url: (service.ogImage || service.image).src, width: (service.ogImage || service.image).width, height: (service.ogImage || service.image).height, alt: (service.ogImage || service.image).alt }],
     },
   };
 }

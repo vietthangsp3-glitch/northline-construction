@@ -4,15 +4,16 @@ import { ImageReveal } from "@/components/motion/image-reveal";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { Container } from "@/components/ui/container";
 import { getPublicProjects } from "@/lib/content/public";
+import type { HomepageCollectionSection } from "@/lib/content/homepage";
 
-export async function SelectedWork() {
+export async function SelectedWork({ config }: { config: HomepageCollectionSection }) {
   const featuredProjects = (await getPublicProjects()).filter((project) => project.featured);
   return (
-    <section className="selected-work" aria-labelledby="selected-work-heading">
+    <section className={`selected-work selected-work--${config.layout}`} aria-labelledby="selected-work-heading">
       <Container>
         <div className="section-heading-row">
-          <p className="eyebrow">02 / Featured Projects</p>
-          <h2 id="selected-work-heading">Selected Work</h2>
+          <p className="eyebrow">{config.eyebrow}</p>
+          <div><h2 id="selected-work-heading">{config.heading}</h2>{config.subheading && <p>{config.subheading}</p>}</div>
         </div>
         <div className="project-editorial">
           {featuredProjects.slice(0, 5).map((project, index) => (

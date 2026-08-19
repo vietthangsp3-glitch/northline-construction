@@ -5,22 +5,25 @@ import { ArrowLink } from "@/components/ui/arrow-link";
 import { Container } from "@/components/ui/container";
 import { insights } from "@/data/insights";
 import { testimonials } from "@/data/testimonials";
+import { getPublicTestimonials } from "@/lib/content/public";
+import type { HomepageTestimonials } from "@/lib/content/homepage";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 
-export function TestimonialInsights() {
-  const testimonial = testimonials[0];
+export async function TestimonialInsights({ config }: { config: HomepageTestimonials }) {
+  const managedTestimonials = await getPublicTestimonials();
+  const testimonial = managedTestimonials[0] || testimonials[0];
   return (
     <>
-      <section className="testimonial" aria-labelledby="testimonial-heading">
+      {config.visible && testimonial && <section className="testimonial" aria-labelledby="testimonial-heading">
         <Container>
-          <p className="eyebrow">07 / Client Perspective</p>
+          <p className="eyebrow">{config.eyebrow}</p>
           <blockquote>
             <p id="testimonial-heading">“{testimonial.quote}”</p>
             <footer><strong>{testimonial.author}</strong><span>{testimonial.role}<br />{testimonial.company}</span></footer>
           </blockquote>
         </Container>
-      </section>
+      </section>}
       <section className="insights-preview" aria-labelledby="insights-heading">
         <Container>
           <div className="insights-preview__heading"><div><p className="eyebrow">08 / Ideas &amp; News</p><h2 id="insights-heading">Insights</h2></div><ArrowLink href="/insights" label="View All Insights" /></div>

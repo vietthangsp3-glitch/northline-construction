@@ -4,12 +4,11 @@ import { ImageReveal } from "@/components/motion/image-reveal";
 import { Container } from "@/components/ui/container";
 import { getPublicServices } from "@/lib/content/public";
 import { createPageMetadata } from "@/lib/site";
+import { getPublicSettings } from "@/lib/content/public";
+import type { Metadata } from "next";
 
-export const metadata = createPageMetadata({
-  title: "Construction Services",
-  description: "Explore Northline's commercial, residential, preconstruction, design-build, renovation, and construction management expertise.",
-  path: "/services",
-});
+export const revalidate=60;
+export async function generateMetadata():Promise<Metadata>{const settings=await getPublicSettings();const seo=(settings["seo.services"]||{}) as {title?:string;description?:string;canonical?:string;ogImage?:{url?:string;alt?:string;width?:number;height?:number}};const fallback=createPageMetadata({title:"Construction Services",description:"Explore Northline's commercial, residential, preconstruction, design-build, renovation, and construction management expertise.",path:"/services"});if(!seo.title)return fallback;return{title:seo.title,description:seo.description,alternates:{canonical:seo.canonical||"/services"},openGraph:{title:seo.title,description:seo.description,url:seo.canonical||"/services",images:seo.ogImage?.url?[{url:seo.ogImage.url,width:seo.ogImage.width||1200,height:seo.ogImage.height||630,alt:seo.ogImage.alt||seo.title}]:undefined}}}
 
 export default async function ServicesPage() {
   const services = await getPublicServices();

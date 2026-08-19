@@ -12,6 +12,8 @@ interface ProjectPageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 60;
+
 export function generateStaticParams() {
   return fallbackProjects.map((project) => ({ slug: project.slug }));
 }
@@ -21,14 +23,14 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   const project = await getPublicProject(slug);
   if (!project) return {};
   return {
-    title: project.name,
-    description: project.summary,
-    alternates: { canonical: "/projects/" + project.slug },
+    title: project.seoTitle || project.name,
+    description: project.seoDescription || project.summary,
+    alternates: { canonical: project.canonicalUrl || "/projects/" + project.slug },
     openGraph: {
-      title: project.name + " | Northline",
-      description: project.summary,
-      url: "/projects/" + project.slug,
-      images: [{ url: project.cover.src, width: project.cover.width, height: project.cover.height, alt: project.cover.alt }],
+      title: project.seoTitle || project.name + " | Northline",
+      description: project.seoDescription || project.summary,
+      url: project.canonicalUrl || "/projects/" + project.slug,
+      images: [{ url: (project.ogImage || project.cover).src, width: (project.ogImage || project.cover).width, height: (project.ogImage || project.cover).height, alt: (project.ogImage || project.cover).alt }],
     },
   };
 }

@@ -8,7 +8,7 @@ const fallbackSocialLinks = [
   { label: "Instagram", href: "https://www.instagram.com" },
 ];
 
-export function SiteFooter({ business, social }: { business?: { email?: string; phone?: string }; social?: { linkedin?: string; instagram?: string } }) {
+export function SiteFooter({ business, social, footer }: { business?: { name?:string;email?: string; phone?: string;address?:string;hours?:string }; social?: { linkedin?: string; instagram?: string };footer?:{description?:string;copyright?:string;contactCta?:string} }) {
   const socialLinks = [
     { label: "LinkedIn", href: social?.linkedin || fallbackSocialLinks[0].href },
     { label: "Instagram", href: social?.instagram || fallbackSocialLinks[1].href },
@@ -21,7 +21,7 @@ export function SiteFooter({ business, social }: { business?: { email?: string; 
         <div className="site-footer__top">
           <div className="site-footer__identity">
             <Link className="wordmark" href="/" aria-label="Northline home">NORTHLINE</Link>
-            <p>Construction<br />&amp; Development</p>
+            <p>{footer?.description || "Construction & Development"}</p>
           </div>
           <div className="site-footer__columns">
             <div>
@@ -42,11 +42,13 @@ export function SiteFooter({ business, social }: { business?: { email?: string; 
               <h2>Contact</h2>
               <a href={`mailto:${email}`}>{email}</a>
               <a href={`tel:${phone.replace(/[^+\d]/g, "")}`}>{phone}</a>
+              {business?.address&&<address>{business.address}</address>}
+              {business?.hours&&<small>{business.hours}</small>}
             </div>
           </div>
         </div>
         <div className="site-footer__bottom">
-          <p>© 2026 Northline Construction &amp; Development</p>
+          <p>{footer?.copyright || "© 2026 Northline Construction & Development"}</p>
           <div><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div>
           <a href="#main-content">Back to Top <span aria-hidden="true">↑</span></a>
         </div>

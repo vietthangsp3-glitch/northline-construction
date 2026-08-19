@@ -45,7 +45,11 @@ npm run start
 - `/admin/login` - Supabase Auth sign-in
 - `/admin/dashboard` - live business/content overview
 - `/admin/inquiries` and `/admin/inquiries/[id]` - inquiry workflow and internal notes
-- `/admin/projects`, `/admin/services`, `/admin/content`, `/admin/media`, `/admin/settings` - CMS workspace
+- `/admin/content/homepage` - guarded visual homepage editor and preview
+- `/admin/content/testimonials` - testimonial publishing and ordering
+- `/admin/projects`, `/admin/services` - portfolio and service editors with Storage media pickers
+- `/admin/media` - searchable Supabase Storage media library
+- `/admin/settings`, `/admin/settings/seo` - business, footer, global SEO, and social previews
 
 ## Project structure
 
@@ -95,8 +99,9 @@ The PostgreSQL `create_inquiry` function atomically enforces five submissions pe
 ## Admin setup
 
 1. Apply `supabase/migrations/202608190002_create_admin_cms.sql` after the inquiry migration.
-2. In Supabase Authentication, create or invite the first administrator.
-3. Approve that exact Auth user in the SQL Editor:
+2. Apply `supabase/migrations/202608190003_safe_visual_cms.sql` to add testimonials and the additional project/service SEO fields. The migration is non-destructive and safe to run again.
+3. In Supabase Authentication, create or invite the first administrator.
+4. Approve that exact Auth user in the SQL Editor:
 
 ```sql
 insert into public.admin_profiles (user_id, role, display_name)
@@ -105,12 +110,12 @@ from auth.users
 where email = 'vietthangsp3@gmail.com';
 ```
 
-4. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` locally and in Cloudflare. Keep server-only variables as encrypted Worker secrets.
-5. Sign in at `/admin/login`, then use “Import current portfolio” once to make the starter projects and services editable.
+5. Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` locally and in Cloudflare. Keep server-only variables as encrypted Worker secrets.
+6. Sign in at `/admin/login`, then use “Import current portfolio” once to make the starter projects and services editable.
 
 Supabase Auth owns passwords and session rotation. The app stores the session in cookies through `@supabase/ssr`, verifies the user through the Auth server, and separately requires an active `admin_profiles` row. Proxy refresh is only an optimistic session step; every protected page and Server Action repeats authorization. Supabase Auth rate limits provide the first login-throttling layer.
 
-The `project-media` bucket is public-read for portfolio delivery but all upload, update, and delete operations require an approved active admin through Storage RLS. Image binaries stay in Storage; PostgreSQL stores metadata and object paths only.
+The `project-media` bucket is public-read for website delivery but all upload, update, and delete operations require an approved active admin through Storage RLS. New assets use controlled prefixes under `site/homepage`, `site/projects`, `site/services`, `site/testimonials`, and `site/seo`. Image binaries stay in Storage; PostgreSQL stores metadata and object paths only. Referenced media is protected from deletion where practical.
 
 ## SEO and social sharing
 
@@ -124,7 +129,7 @@ A hard Content Security Policy is intentionally deferred until the final deploym
 
 ## Performance
 
-- Static generation for public content with resilient local fallbacks
+- Static generation with 60-second revalidation for CMS-backed public routes, plus immediate path revalidation after Admin mutations where the runtime cache supports it
 - One self-hosted variable font
 - Stable image dimensions and responsive image sizes
 - Hero images only are prioritized

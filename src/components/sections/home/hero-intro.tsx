@@ -1,37 +1,27 @@
 import Image from "next/image";
 import { ArrowLink } from "@/components/ui/arrow-link";
+import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { getPublicContent } from "@/lib/content/public";
+import type { HomepageContent } from "@/lib/content/homepage";
 
-const fallbackStats = [
-  { value: "25+", label: "Years of Experience" },
-  { value: "180+", label: "Projects Delivered" },
-  { value: "$1.2B+", label: "Project Value" },
-  { value: "14", label: "Industry Awards" },
-];
-
-export async function HeroIntro() {
-  const content = await getPublicContent();
-  const hero = (content["home.hero"] || {}) as { heading?: string; description?: string; cta?: string };
-  const about = (content["home.about"] || {}) as { heading?: string; body?: string };
-  const statsContent = (content["home.stats"] || {}) as { items?: Array<{value:string;label:string}> };
-  const heading = hero.heading || "We Build What's Next.";
-  const headingParts = heading.toUpperCase().split(/(?=WHAT'S NEXT\.?$)/);
-  const stats = statsContent.items?.length ? statsContent.items : fallbackStats;
+export function HeroIntro({ content }: { content: HomepageContent }) {
+  const { hero, about, stats } = content;
+  const headingParts = hero.heading.toUpperCase().split(/(?=WHAT'S NEXT\.?$)/);
   return (
     <>
-      <section className="home-hero" aria-labelledby="hero-heading">
-        <Image src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2400&q=88" alt="Modern high-rise architecture rising into a clear sky" fill priority sizes="100vw" className="home-hero__image" />
-        <div className="home-hero__scrim" />
+      <section className={`home-hero home-hero--${hero.layout} home-hero--align-${hero.alignment}`} aria-labelledby="hero-heading">
+        {hero.image && <Image src={hero.image.url} alt={hero.image.alt} fill priority sizes="100vw" className="home-hero__image home-hero__image--desktop" />}
+        {hero.mobileImage && <Image src={hero.mobileImage.url} alt={hero.mobileImage.alt || hero.image?.alt || ""} fill priority sizes="100vw" className="home-hero__image home-hero__image--mobile" />}
+        <div className="home-hero__scrim" style={{ opacity: hero.overlay / 100 }} />
         <Container className="home-hero__content">
           <div className="home-hero__body">
-            <p className="eyebrow">New York · Building Nationwide</p>
+            {hero.eyebrow && <p className="eyebrow">{hero.eyebrow}</p>}
             <h1 id="hero-heading">{headingParts.map((part) => <span key={part}>{part}</span>)}</h1>
             <div className="home-hero__footer">
-              <p>{hero.description || "Building exceptional spaces through precision, craftsmanship and purpose."}</p>
+              <p>{hero.description}</p>
               <div className="home-hero__actions">
-                <ArrowLink href="/projects" label="Explore Our Work" tone="light" />
-                <ArrowLink href="/request-a-quote" label={hero.cta || "Start a Project"} tone="light" />
+                <ArrowLink href={hero.primaryCtaUrl} label={hero.primaryCtaText} tone="light" />
+                {hero.secondaryCtaEnabled && <ArrowLink href={hero.secondaryCtaUrl} label={hero.secondaryCtaText} tone="light" />}
               </div>
             </div>
           </div>
@@ -39,21 +29,25 @@ export async function HeroIntro() {
         </Container>
       </section>
 
-      <section id="about" className="home-intro" aria-labelledby="intro-heading">
+      {(about.visible || stats.visible) && <section id="about" className={`home-intro${about.image ? " home-intro--with-media" : ""}`} aria-labelledby="intro-heading">
         <Container>
-          <p className="eyebrow">01 / About Northline</p>
+          {about.visible && <>
+          <p className="eyebrow">{about.label}</p>
           <div className="home-intro__grid">
-            <h2 id="intro-heading">{about.heading || <>Built on precision.<br />Driven by possibility.</>}</h2>
+            <h2 id="intro-heading">{about.heading}</h2>
             <div className="home-intro__copy">
-              <p>{about.body || "Northline builds places where people work, live, heal, gather, and move forward. For more than 25 years, we have brought discipline to demanding projects across the United States—aligning design intent with real-world execution from the earliest decision through final handover."}</p>
-              <p>Our teams pair construction knowledge with direct communication and an exacting standard of craft. The result is work that performs under pressure and holds its value over time.</p>
+              <p>{about.description}</p>
+              {about.secondaryDescription && <p>{about.secondaryDescription}</p>}
+              {about.ctaText && <ButtonLink href={about.ctaUrl}>{about.ctaText}</ButtonLink>}
             </div>
           </div>
-          <dl className="home-stats">
-            {stats.map((stat) => <div key={stat.label}><dt>{stat.label}</dt><dd>{stat.value}</dd></div>)}
-          </dl>
+          {about.image && <div className="home-intro__media"><Image src={about.image.url} alt={about.image.alt} fill sizes="(max-width: 767px) 100vw, 75vw" /></div>}
+          </>}
+          {stats.visible && <dl className="home-stats">
+            {stats.items.map((stat) => <div key={`${stat.label}-${stat.value}`}><dt>{stat.label}</dt><dd>{stat.value}</dd></div>)}
+          </dl>}
         </Container>
-      </section>
+      </section>}
     </>
   );
 }

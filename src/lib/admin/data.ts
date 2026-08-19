@@ -100,9 +100,65 @@ export async function getSiteSettings() {
   return data ?? [];
 }
 
-export async function getMediaAssets() {
+export async function getMediaAssets(filters: { query?: string; type?: string } = {}) {
   const supabase = await client();
-  const { data, error } = await supabase.from("media_assets").select("id,storage_path,public_url,file_name,mime_type,size_bytes,width,height,alt_text,created_at").order("created_at", { ascending: false }).limit(100);
+  let query = supabase.from("media_assets").select("id,bucket,storage_path,public_url,file_name,mime_type,size_bytes,width,height,alt_text,created_at").order("created_at", { ascending: false }).limit(200);
+  const search = (filters.query || "").replace(/[,%()]/g, " ").trim();
+  if (search) query = query.or(`file_name.ilike.%${search}%,alt_text.ilike.%${search}%`);
+  if (["jpeg", "png", "webp", "avif"].includes(filters.type || "")) query = query.eq("mime_type", `image/${filters.type}`);
+  const { data, error } = await query;
   if (error) throw error;
   return data ?? [];
+}
+
+export async function getHomepageAdminData() {
+  const supabase = await client();
+  const [content, projects, services, media] = await Promise.all([
+    getSiteContent(),
+    supabase.from("projects").select("id,title,slug,status,featured,sort_order").neq("status", "archived").order("sort_order"),
+    supabase.from("services").select("id,title,slug,active,featured,sort_order").order("sort_order"),
+    getMediaAssets(),
+  ]);
+  if (projects.error) throw projects.error;
+  if (services.error) throw services.error;
+  return {
+    content: Object.fromEntries(content.map((item) => [item.key, item.value])) as Record<string, unknown>,
+    updatedAt: content.filter((item) => item.key.startsWith("home.")).map((item) => item.updated_at).sort().at(-1) || null,
+    projects: projects.data ?? [],
+    services: services.data ?? [],
+    media,
+  };
+}
+
+export async function getAdminTestimonials() {
+  const supabase = await client();
+  const { data, error } = await supabase.from("testimonials").select("*,projects(title,slug)").order("sort_order").order("updated_at", { ascending: false });
+  if (error) {
+    if (error.code === "42P01" || error.code === "PGRST205") return [];
+    throw error;
+  }
+  return data ?? [];
+}
+
+export async function getAdminTestimonial(id: string) {
+  const supabase = await client();
+  const { data, error } = await supabase.from("testimonials").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function getMediaUsage(assets: Awaited<ReturnType<typeof getMediaAssets>>) {
+  const supabase = await client();
+  const [projects, services, galleries, testimonials, content, settings] = await Promise.all([
+    supabase.from("projects").select("hero_image_path,hero_image_url,og_image_path,og_image_url"),
+    supabase.from("services").select("image_path,image_url,og_image_path,og_image_url"),
+    supabase.from("project_images").select("storage_path,public_url"),
+    supabase.from("testimonials").select("avatar_path,avatar_url"),
+    supabase.from("site_content").select("value"),
+    supabase.from("site_settings").select("value"),
+  ]);
+  const searchable = JSON.stringify([
+    projects.data || [], services.data || [], galleries.data || [], testimonials.data || [], content.data || [], settings.data || [],
+  ]);
+  return Object.fromEntries(assets.map((asset) => [asset.id, [asset.storage_path, asset.public_url].reduce((count, token) => count + (token ? searchable.split(token).length - 1 : 0), 0)]));
 }
